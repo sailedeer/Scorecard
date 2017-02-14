@@ -15,7 +15,7 @@ public class Game {
         Useless,
     }
 
-    ArrayList<Player> players;
+    Player[] players;
     ArrayList<Game> subGames;
     Course course;
     GameType gameType;
