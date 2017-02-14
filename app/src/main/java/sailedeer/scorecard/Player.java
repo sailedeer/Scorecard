@@ -5,4 +5,13 @@ package sailedeer.scorecard;
  */
 
 public class Player {
+    String name;
+    int handicapIndex;
+    int courseHandicap;
+
+    public Player(String _name, int _handicapIndex)
+    {
+        handicapIndex = _handicapIndex;
+        name = _name;
+    }
 }

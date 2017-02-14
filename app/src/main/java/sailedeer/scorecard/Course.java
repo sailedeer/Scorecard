@@ -5,4 +5,6 @@ package sailedeer.scorecard;
  */
 
 public class Course {
+    String name;
+    int slope;
 }
