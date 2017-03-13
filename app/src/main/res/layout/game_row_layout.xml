@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/player_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="game_ph" />
+
+    <TextView
+        android:id="@+id/handicap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Course:"
+        android:layout_below="@+id/player_name"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/hole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current Hole:"
+        android:layout_alignBaseline="@+id/handicap"
+        android:layout_alignBottom="@+id/handicap"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="206dp" />
+
+</RelativeLayout>

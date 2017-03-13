@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Scorecard</string>
+    <string name="players_tab_name">Players</string>
+    <string name="games_tab_name">Games</string>
+    <string name="course_tab_name">Courses</string>
+    <string name="action_settings">Edit</string>
 </resources>
