@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -51,6 +53,13 @@ public class CourseTabFragment extends ListFragment{
             final Course course = new Course("Course name", 100);
             customListViewArrs.add(course);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_course, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void onItemClick(int mPosition)

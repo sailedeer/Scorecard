@@ -52,7 +52,8 @@ public class GameTabFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //inflater.inflate();
+        inflater.inflate(R.menu.menu_game, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void onItemClick(int mPosition)

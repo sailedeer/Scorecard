@@ -1,5 +1,6 @@
 package sailedeer.scorecard.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -9,7 +10,7 @@ import java.util.Hashtable;
  * Created by sailedeer7 on 2/13/2017.
  */
 
-public class Game {
+public class Game implements Serializable{
 
     private ArrayList<Player> mPlayers;
     private ArrayList<Game> mSubGames;
