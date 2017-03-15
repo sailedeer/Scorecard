@@ -1,18 +1,21 @@
 package sailedeer.scorecard.activities;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 
 import sailedeer.scorecard.activities.fragments.handling.PagerAdapter;
 import sailedeer.scorecard.R;
+import sailedeer.scorecard.data.sql.FeedReaderDbHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout.Tab mTab;
+    private FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +51,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void readDatabase()
+    {
+        mDb = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                FeedReaderContract.FeedEntry._ID,
+                FeedReaderContract.FeedEntry.PLAYER_COLUMN_NAME_TITLE,
+                FeedReaderContract.FeedEntry.GAME_COLUMN_NAME_TITLE,
+                FeedReaderContract.FeedEntry.COURSE_COLUMN_NAME_TITLE,
+        };
     }
 }

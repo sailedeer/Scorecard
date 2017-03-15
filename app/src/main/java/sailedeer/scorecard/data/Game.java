@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.UUID;
 
 /**
  * Created by sailedeer7 on 2/13/2017.
@@ -13,21 +14,21 @@ import java.util.Hashtable;
 public class Game implements Serializable{
 
     private ArrayList<Player> mPlayers;
-    private ArrayList<Game> mSubGames;
+    //private ArrayList<Game> mSubGames;
     private Course mCourse;
     private GameType mGameType;
     private int[] mRoundScore;
     private int mCurrentHole;
-    private String mName;
+    private UUID mID;
 
     public Game(Course course, GameType gameType, ArrayList<Player> players) {
         mCourse = course;
         mGameType = gameType;
         mPlayers = players;
-        mName = "Game";
+        mID = UUID.randomUUID();
         mCurrentHole = 0;
 
-        mSubGames = new ArrayList<>();
+        //mSubGames = new ArrayList<>();
         mRoundScore = new int[18];
     }
 
@@ -47,8 +48,8 @@ public class Game implements Serializable{
         return mCurrentHole;
     }
 
-    public String getGameName()
+    public String getGameID()
     {
-     return mName;
+     return mID.toString();
     }
 }
