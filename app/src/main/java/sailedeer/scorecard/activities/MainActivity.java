@@ -9,27 +9,27 @@ import android.support.v7.widget.Toolbar;
 
 import sailedeer.scorecard.activities.fragments.handling.PagerAdapter;
 import sailedeer.scorecard.R;
-import sailedeer.scorecard.data.sql.FeedReaderDbHelper;
+import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout.Tab mTab;
-    private FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(this);
+    private DatabaseHelper mDbHelper = new DatabaseHelper(this);
     private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Players"));
         tabLayout.addTab(tabLayout.newTab().setText("Games"));
         tabLayout.addTab(tabLayout.newTab().setText("Courses"));
 
-        final ViewPager viewPager = (ViewPager)findViewById(R.id.pager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -51,17 +51,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void readDatabase()
-    {
-        mDb = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                FeedReaderContract.FeedEntry._ID,
-                FeedReaderContract.FeedEntry.PLAYER_COLUMN_NAME_TITLE,
-                FeedReaderContract.FeedEntry.GAME_COLUMN_NAME_TITLE,
-                FeedReaderContract.FeedEntry.COURSE_COLUMN_NAME_TITLE,
-        };
     }
 }

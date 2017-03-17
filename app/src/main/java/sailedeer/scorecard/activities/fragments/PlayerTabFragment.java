@@ -15,10 +15,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import sailedeer.scorecard.R;
+import sailedeer.scorecard.activities.NewCourseActivity;
 import sailedeer.scorecard.activities.NewPlayerActivity;
 import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.data.handling.PlayerListAdapter;
-import sailedeer.scorecard.data.sql.FeedReaderDbHelper;
+import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 /**
  * Created by Eli on 3/7/2017.
@@ -31,7 +32,7 @@ public class PlayerTabFragment extends ListFragment {
     public PlayerTabFragment customListView = null;
     public ArrayList<Player> customListViewArrs = new ArrayList<>();
     private SQLiteDatabase db;
-    private FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getContext());
+    private DatabaseHelper mDbHelper = new DatabaseHelper(getContext());
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class PlayerTabFragment extends ListFragment {
     public void onItemClick(int mPosition)
     {
         Player tempValues = ( Player ) customListViewArrs.get(mPosition);
-        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
+        Intent intent = new Intent(getContext(), NewCourseActivity.class);
         startActivity(intent);
     }
 }

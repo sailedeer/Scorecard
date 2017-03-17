@@ -15,17 +15,21 @@ public class Game implements Serializable{
 
     private ArrayList<Player> mPlayers;
     //private ArrayList<Game> mSubGames;
+    private Press backPress;
+    private Press frontPress;
+    private Press gamePress;
     private Course mCourse;
     private GameType mGameType;
     private int[] mRoundScore;
     private int mCurrentHole;
-    private UUID mID;
+    private int mID;
+
+    public Game(){}
 
     public Game(Course course, GameType gameType, ArrayList<Player> players) {
         mCourse = course;
         mGameType = gameType;
         mPlayers = players;
-        mID = UUID.randomUUID();
         mCurrentHole = 0;
 
         //mSubGames = new ArrayList<>();
@@ -38,6 +42,30 @@ public class Game implements Serializable{
         return  69;
     }
 
+    public void setmPlayers(ArrayList<Player> mPlayers) {
+        this.mPlayers = mPlayers;
+    }
+
+    public void setmCourse(Course mCourse) {
+        this.mCourse = mCourse;
+    }
+
+    public void setmGameType(GameType mGameType) {
+        this.mGameType = mGameType;
+    }
+
+    public void setmRoundScore(int[] mRoundScore) {
+        this.mRoundScore = mRoundScore;
+    }
+
+    public void setmCurrentHole(int mCurrentHole) {
+        this.mCurrentHole = mCurrentHole;
+    }
+
+    public void setmID(int mID) {
+        this.mID = mID;
+    }
+
     public String getCourseName()
     {
         return mCourse.getName();
@@ -48,8 +76,8 @@ public class Game implements Serializable{
         return mCurrentHole;
     }
 
-    public String getGameID()
+    public int getGameID()
     {
-     return mID.toString();
+     return mID;
     }
 }

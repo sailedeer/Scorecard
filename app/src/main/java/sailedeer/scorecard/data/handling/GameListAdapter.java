@@ -86,7 +86,6 @@ public class GameListAdapter extends BaseAdapter implements View.OnClickListener
             tempValues = null;
             tempValues = (Game)data.get(position);
 
-            holder.gameName.setText(tempValues.getGameName());
             holder.courseName.setText("Course: " + tempValues.getCourseName());
             holder.currentHole.setText("Current Hole: " + tempValues.getCurrentHole());
 

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import sailedeer.scorecard.R;
+import sailedeer.scorecard.activities.NewGameActivity;
 import sailedeer.scorecard.activities.NewPlayerActivity;
 import sailedeer.scorecard.data.Course;
 import sailedeer.scorecard.data.Game;
@@ -59,7 +60,7 @@ public class GameTabFragment extends ListFragment {
     public void onItemClick(int mPosition)
     {
         Game tempValues = ( Game ) customListViewArrs.get(mPosition);
-        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
+        Intent intent = new Intent(getContext(), NewGameActivity.class);
         startActivity(intent);
     }
 
