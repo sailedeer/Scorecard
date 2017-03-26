@@ -10,11 +10,26 @@ import java.io.Serializable;
 public class Course implements Serializable {
     private String mName;
     private int mSlope;
+    private int mId;
+
+    public Course() {}
 
     public Course(String name, int slope)
     {
         mName = name;
         mSlope = slope;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
+    public void setSlope(int mSlope) {
+        this.mSlope = mSlope;
+    }
+
+    public void setId(int id) {
+        this.mId = id;
     }
 
     public String getName()
@@ -26,4 +41,6 @@ public class Course implements Serializable {
     {
         return mSlope;
     }
+
+    public int getID() { return mId; }
 }

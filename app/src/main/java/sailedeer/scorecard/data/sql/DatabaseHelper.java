@@ -1,9 +1,11 @@
 package sailedeer.scorecard.data.sql;
 
+import android.content.ContentValues;
 import android.content.Context;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -18,14 +20,15 @@ import sailedeer.scorecard.data.Player;
  * Created by Eli on 3/13/2017.
  */
 
-@Deprecated
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    private Context mContext;
 
     // Log tag
     private static final String LOG = "DatabaseHelper:";
 
     // database name
-    private static final String DATABASE_NAME = "Scorecard.db";
+    public static final String DATABASE_NAME = "scorecard.db";
 
     // database version
     public static final int DATABASE_VERSION = 1;
@@ -39,46 +42,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
 
     // Player Column Names
-    public static final String KEY_NAME = "name";
-    public static final String KEY_HANDICAP = "handicap";
+    private static final String KEY_PLAYER_NAME = "name";
+    private static final String KEY_HANDICAP = "handicap";
+    private static final String[] PLAYER_COLUMNS = {KEY_ID, KEY_PLAYER_NAME, KEY_HANDICAP};
 
     // Game Column Names
-    public static final String KEY_SCORES = "scores";
-    public static final String KEY_COURSE_ID = "course_id";
-    public static final String KEY_PLAYER_ID = "player_ids";
-    public static final String GAME_TYPE_COLUMN = "game_type";
-    public static final String HOLE_COLUMN = "hole";
+    private static final String KEY_SCORES = "scores";
+    private static final String KEY_COURSE_ID = "course_id";
+    private static final String KEY_PLAYER_IDS = "player_ids";
+    private static final String KEY_HOLE = "hole";
+    private static final String[] GAME_COLUMNS = {KEY_ID, KEY_SCORES, KEY_COURSE_ID, KEY_PLAYER_IDS, KEY_HOLE};
 
     // Course Column Names
-    public static final String COURSE_COLUMN = "name";
-    public static final String SLOPE_COLUMN = "slope";
+    private static final String KEY_COURSE = "name";
+    private static final String KEY_SLOPE = "slope";
+    private static final String[] COURSE_COLUMNS = {KEY_ID, KEY_COURSE, KEY_SLOPE};
 
+    // Database create statements
     private static final String CREATE_TABLE_PLAYER = "CREATE TABLE " +
-            TABLE_PLAYER + "(" + KEY_ID + " INTEGER PRIMARY KEY " +
-            KEY_NAME + " TEXT, " + KEY_HANDICAP + "INTEGER" +
+            TABLE_PLAYER + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            KEY_PLAYER_NAME + " TEXT, " + KEY_HANDICAP + " INTEGER " +
             ")";
 
     private static final String CREATE_TABLE_GAME = "CREATE TABLE " +
-            TABLE_GAME + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_COURSE_ID +
-            "INTEGER," + KEY_PLAYER_ID + "TEXT," + GAME_TYPE_COLUMN +
-            "TEXT," + HOLE_COLUMN + "INTEGER," + KEY_SCORES + "TEXT" + ")";
+            TABLE_GAME + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_COURSE_ID +
+            " INTEGER, " + KEY_PLAYER_IDS + " TEXT, " +
+            KEY_HOLE + " INTEGER, " + KEY_SCORES + " TEXT " + ")";
 
     private static final String CREATE_TABLE_COURSE = "CREATE TABLE " +
-            TABLE_COURSE + "(" + KEY_ID + "INTEGER PRIMARY KEY," +
-            COURSE_COLUMN + "TEXT," + SLOPE_COLUMN + "INTEGER" + ")";
+            TABLE_COURSE + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            KEY_COURSE + " TEXT, " + KEY_SLOPE + " INTEGER " + ")";
 
-    public DatabaseHelper(Context context)
-    {
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
-    public void onCreate(SQLiteDatabase db)
-    {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
         db.execSQL(CREATE_TABLE_PLAYER);
         db.execSQL(CREATE_TABLE_GAME);
         db.execSQL(CREATE_TABLE_COURSE);
     }
 
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAYER);
@@ -88,62 +96,256 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
 
     //fetch all games
-    public List<Game> getGames()
-    {
-        List<Game> games = new ArrayList<Game>();
+    public ArrayList<Game> getAllGames() {
+        ArrayList<Game> games = new ArrayList<>();
+        String[] pIds;
+        Player[] players;
         int[] scores;
-        String[] splitPlayers;
-        String[] splitScores;
-
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_GAME;
 
         Log.e(LOG, selectQuery);
 
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor c = db.rawQuery(selectQuery, null);
 
         //loop through rows
-        if(cursor.moveToFirst())
-        {
+        if (c.moveToFirst()) {
             do {
-                Game game = new Game();
-                splitPlayers = cursor.getString(cursor.getColumnIndex(KEY_PLAYER_ID)).split(",");
-                splitScores = cursor.getString(cursor.getColumnIndex(KEY_SCORES)).split(",");
-                scores = new int[splitScores.length];
-
-                //get players based on ID in player_table
-                //get course based on course ID in course_table
-                game.setmCurrentHole(cursor.getInt(cursor.getColumnIndex(HOLE_COLUMN)));
-
-                //convert scores to array to pass into game
-                for (int i = 0; i < splitScores.length; i++)
-                {
-                    scores[i] = Integer.parseInt(splitScores[i]);
+                //split ids from db into array
+                pIds = c.getString(c.getColumnIndex(KEY_PLAYER_IDS)).split(",");
+                //now add those ids to int[] to pass into method that gets players
+                players = new Player[pIds.length];
+                for (int i = 0; i < pIds.length; i++) {
+                    players[i] = getPlayer(Integer.parseInt(pIds[i]));
                 }
 
-                game.setmRoundScore(scores);
-                game.setmID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+                //split comma-delineated scores into int[]
+                String[] strScores = c.getString(c.getColumnIndex(KEY_SCORES)).split(",");
+                scores = new int[strScores.length];
+                for (int j = 0; j < strScores.length; j++)
+                {
+                    scores[j] = Integer.parseInt(strScores[j]);
+                }
 
-
-            } while (cursor.moveToNext());
+                Game game = new Game();
+                game.setID(c.getInt(c.getColumnIndex(KEY_ID)));
+                game.setCourse(getCourse(c.getInt(c.getColumnIndex(KEY_COURSE_ID))));
+                game.setPlayers(players);
+                game.setRoundScore(scores);
+                game.setCurrentHole(c.getInt(c.getColumnIndex(KEY_HOLE)));
+            } while (c.moveToNext());
         }
 
-        return null;
+        db.close();
+        return games;
     }
 
-    public ArrayList<Course> getCourses()
+
+    public ArrayList<Course> getAllCourses()
     {
-        return null;
+        ArrayList<Course> courses = new ArrayList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_COURSE;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        //loop through rows
+        if (c.moveToFirst()) {
+            do {
+                Course course = new Course();
+                course.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                course.setName(c.getString(c.getColumnIndex(KEY_COURSE)));
+                course.setSlope(c.getInt(c.getColumnIndex(KEY_SLOPE)));
+                courses.add(course);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        db.close();
+        return courses;
     }
 
-    public ArrayList<Player> getPlayers()
+    public ArrayList<Player> getAllPlayers()
     {
-        return null;
+        ArrayList<Player> players = new ArrayList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_PLAYER;
+
+        Log.e(LOG, selectQuery);
+
+        try {
+            Cursor c = db.rawQuery(selectQuery, null);
+
+            //loop through rows
+            if (c.moveToFirst()) {
+                do {
+                    Player player = new Player();
+                    player.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                    player.setName(c.getString(c.getColumnIndex(KEY_PLAYER_NAME)));
+                    player.setHandicap(c.getInt(c.getColumnIndex(KEY_HANDICAP)));
+                    players.add(player);
+                } while (c.moveToNext());
+            }
+
+            c.close();
+            db.close();
+        }
+        catch(SQLiteException sqe)
+        {
+            Log.e(LOG, sqe.getMessage());
+        }
+        return players;
+    }
+
+    public Game getGame(int id) {
+
+        String[] pIds;
+        Player[] players;
+        int[] scores;
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query(TABLE_GAME,
+                GAME_COLUMNS,
+                "id = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        //split ids from db into array
+        pIds = c.getString(c.getColumnIndex(KEY_PLAYER_IDS)).split(",");
+        //now add those ids to int[] to pass into method that gets players
+        players = new Player[pIds.length];
+        for (int i = 0; i < pIds.length; i++) {
+            players[i] = getPlayer(Integer.parseInt(pIds[i]));
+        }
+
+        //split comma-delineated scores into int[]
+        String[] strScores = c.getString(c.getColumnIndex(KEY_SCORES)).split(",");
+        scores = new int[strScores.length];
+        for (int j = 0; j < strScores.length; j++)
+        {
+            scores[j] = Integer.parseInt(strScores[j]);
+        }
+
+        Game game = new Game();
+        game.setID(c.getInt(c.getColumnIndex(KEY_ID)));
+        game.setCourse(getCourse(c.getInt(c.getColumnIndex(KEY_COURSE_ID))));
+        game.setPlayers(players);
+        game.setRoundScore(scores);
+        game.setCurrentHole(c.getInt(c.getColumnIndex(KEY_HOLE)));
+
+        c.close();
+        db.close();
+        return game;
+    }
+
+    public Course getCourse(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.query(TABLE_COURSE,
+                COURSE_COLUMNS,
+                "id = ?",
+                new String[] {String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        Course course = new Course();
+        course.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        course.setName(c.getString(c.getColumnIndex(KEY_COURSE)));
+        course.setSlope(c.getInt(c.getColumnIndex(KEY_SLOPE)));
+
+        c.close();
+        db.close();
+        return course;
+    }
+
+    public Player getPlayer(int id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.query(TABLE_PLAYER,
+                PLAYER_COLUMNS,
+                "id = ?",
+                new String[] {String.valueOf(id)},
+                null,
+                null,
+                null,
+                null);
+
+        Player player = new Player();
+        player.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        player.setName(c.getString(c.getColumnIndex(KEY_PLAYER_NAME)));
+        player.setHandicap(c.getInt(c.getColumnIndex(KEY_HANDICAP)));
+
+        c.close();
+        db.close();
+        return player;
+    }
+
+    public void addPlayer(Player p)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_PLAYER_NAME, p.getName());
+        cv.put(KEY_HANDICAP, p.getHandicap());
+
+        db.insert(TABLE_PLAYER, null, cv);
+        db.close();
+    }
+
+    public void addCourse(Course c)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_COURSE, c.getName());
+        cv.put(KEY_SLOPE, c.getSlope());
+
+        db.insert(TABLE_COURSE, null, cv);
+        db.close();
+    }
+
+    public void addGame(Game g)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_COURSE_ID, g.getCourse().getID());
+        int[] scores = g.getRoundScore();
+        String strScores = "";
+
+        // convert scores to comma delineated string
+        for (int i = 0; i < scores.length; i++) {
+            strScores += scores[i] +
+                    (i < scores.length - 1 ? "," : "");
+        }
+        cv.put(KEY_SCORES, strScores);
+
+        // get array of player ids, convert to string
+        String pIds = "";
+        for (int j = 0; j < g.getPlayers().length; j++) {
+            pIds += g.getPlayers()[j] + (j < g.getPlayers().length - 1 ? "," : "");
+        }
+        cv.put(KEY_PLAYER_IDS, pIds);
+        cv.put(KEY_HOLE, g.getCurrentHole());
+
+        db.insert(TABLE_GAME, null, cv);
+        db.close();
     }
 }

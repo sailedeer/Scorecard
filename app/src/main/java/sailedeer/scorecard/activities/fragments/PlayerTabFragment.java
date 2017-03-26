@@ -8,6 +8,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -32,18 +33,18 @@ public class PlayerTabFragment extends ListFragment {
     public PlayerTabFragment customListView = null;
     public ArrayList<Player> customListViewArrs = new ArrayList<>();
     private SQLiteDatabase db;
-    private DatabaseHelper mDbHelper = new DatabaseHelper(getContext());
+    private DatabaseHelper mDbHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.tab_layout, container, false);
-
+        mDbHelper = new DatabaseHelper(getContext());
         customListView = this;
 
         Resources res = getResources();
 
-//        setListData();
+        setListData();
 
         adapter = new PlayerListAdapter(customListView, customListViewArrs, res);
 
@@ -70,7 +71,28 @@ public class PlayerTabFragment extends ListFragment {
     public void onItemClick(int mPosition)
     {
         Player tempValues = ( Player ) customListViewArrs.get(mPosition);
-        Intent intent = new Intent(getContext(), NewCourseActivity.class);
+        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.new_player:
+                Intent intent = new Intent(getContext(), NewPlayerActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.remove_player:
+                //remove player here
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setListData()
+    {
+        customListViewArrs = mDbHelper.getAllPlayers();
     }
 }

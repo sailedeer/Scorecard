@@ -6,21 +6,29 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import sailedeer.scorecard.activities.fragments.handling.PagerAdapter;
 import sailedeer.scorecard.R;
+import sailedeer.scorecard.data.Course;
+import sailedeer.scorecard.data.Game;
+import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout.Tab mTab;
-    private DatabaseHelper mDbHelper = new DatabaseHelper(this);
+    private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -51,5 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 }

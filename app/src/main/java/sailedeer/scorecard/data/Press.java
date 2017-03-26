@@ -1,11 +1,18 @@
 package sailedeer.scorecard.data;
 
-import java.util.ArrayList;
-
 /**
  * Created by Eli on 3/16/2017.
  */
 
 public class Press {
-    private int mBet;
+    private int mPressScore;
+
+
+    public int getPressScore() {
+        return mPressScore;
+    }
+
+    public void setPressScore(int pressScore) {
+        this.mPressScore = pressScore;
+    }
 }

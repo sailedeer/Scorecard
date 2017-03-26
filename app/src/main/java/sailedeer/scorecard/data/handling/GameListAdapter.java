@@ -83,13 +83,13 @@ public class GameListAdapter extends BaseAdapter implements View.OnClickListener
             holder.gameName.setText("No Data");
         else
         {
-            tempValues = null;
-            tempValues = (Game)data.get(position);
-
-            holder.courseName.setText("Course: " + tempValues.getCourseName());
-            holder.currentHole.setText("Current Hole: " + tempValues.getCurrentHole());
-
-            vi.setOnClickListener(new OnItemClickListener(position));
+//            tempValues = null;
+//            tempValues = (Game)data.get(position);
+//
+//            holder.courseName.setText("Course: " + tempValues.getCourseName());
+//            holder.currentHole.setText("Current Hole: " + tempValues.getCurrentHole());
+//
+//            vi.setOnClickListener(new OnItemClickListener(position));
         }
         return vi;
     }

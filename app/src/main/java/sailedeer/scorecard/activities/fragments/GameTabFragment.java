@@ -7,6 +7,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -15,11 +16,9 @@ import java.util.ArrayList;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.activities.NewGameActivity;
-import sailedeer.scorecard.activities.NewPlayerActivity;
-import sailedeer.scorecard.data.Course;
 import sailedeer.scorecard.data.Game;
-import sailedeer.scorecard.data.GameType;
 import sailedeer.scorecard.data.handling.GameListAdapter;
+import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 /**
  * Created by Eli on 3/7/2017.
@@ -28,6 +27,7 @@ import sailedeer.scorecard.data.handling.GameListAdapter;
 public class GameTabFragment extends ListFragment {
 
     ListView list;
+    DatabaseHelper databaseHelper;
     GameListAdapter adapter;
     public GameTabFragment customListView = null;
     public ArrayList<Game> customListViewArrs = new ArrayList<>();
@@ -35,6 +35,7 @@ public class GameTabFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        databaseHelper = new DatabaseHelper(getContext());
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.tab_layout, container, false);
         customListView = this;
 
@@ -64,12 +65,24 @@ public class GameTabFragment extends ListFragment {
         startActivity(intent);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.new_game:
+                Intent intent = new Intent(getContext(), NewGameActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.remove_game:
+                //remove player here
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void setListData()
     {
-        for (int i = 0; i < 11; i++)
-        {
-            final Game game = new Game(new Course("Name", 100), GameType.Individual, null);
-            customListViewArrs.add(game);
-        }
+        //customListViewArrs = databaseHelper.getAllGames();
     }
 }
