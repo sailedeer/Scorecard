@@ -1,6 +1,8 @@
 package sailedeer.scorecard.data;
 
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**

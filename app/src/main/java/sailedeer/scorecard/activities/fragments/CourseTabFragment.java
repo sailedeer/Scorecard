@@ -54,7 +54,7 @@ public class CourseTabFragment extends ListFragment{
         return viewGroup;
     }
 
-    private void setListData()
+    public void setListData()
     {
         customListViewArr = dbHelper.getAllCourses();
     }

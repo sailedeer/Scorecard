@@ -13,6 +13,9 @@ import sailedeer.scorecard.activities.fragments.PlayerTabFragment;
  */
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
+    PlayerTabFragment tab1;
+    GameTabFragment tab2;
+    CourseTabFragment tab3;
     int mNumOfTabs;
 
     public PagerAdapter(FragmentManager fm, int numOfTabs)
@@ -27,16 +30,26 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         switch (position)
         {
             case 0:
-                PlayerTabFragment tab1 = new PlayerTabFragment();
+                tab1 = new PlayerTabFragment();
                 return tab1;
             case 1:
-                GameTabFragment tab2 = new GameTabFragment();
+                tab2 = new GameTabFragment();
                 return tab2;
             case 2:
-                CourseTabFragment tab3 = new CourseTabFragment();
+                tab3 = new CourseTabFragment();
                 return tab3;
             default:
                 return null;
+        }
+    }
+
+    public void updateLists()
+    {
+        if (tab1 != null && tab2 != null && tab3 != null)
+        {
+            tab1.setListData();
+            tab2.setListData();
+            tab3.setListData();
         }
     }
 

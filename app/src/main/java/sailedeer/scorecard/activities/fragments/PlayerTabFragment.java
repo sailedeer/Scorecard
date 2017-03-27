@@ -91,8 +91,10 @@ public class PlayerTabFragment extends ListFragment {
         }
     }
 
-    private void setListData()
+    public void setListData()
     {
         customListViewArrs = mDbHelper.getAllPlayers();
     }
+
+
 }

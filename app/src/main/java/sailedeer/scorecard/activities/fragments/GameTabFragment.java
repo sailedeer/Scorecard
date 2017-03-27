@@ -81,7 +81,7 @@ public class GameTabFragment extends ListFragment {
         }
     }
 
-    private void setListData()
+    public void setListData()
     {
         //customListViewArrs = databaseHelper.getAllGames();
     }

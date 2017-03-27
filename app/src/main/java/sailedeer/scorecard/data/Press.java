@@ -1,5 +1,7 @@
 package sailedeer.scorecard.data;
 
+import java.io.Serializable;
+
 /**
  * Created by Eli on 3/16/2017.
  */
