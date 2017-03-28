@@ -10,22 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.View;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import sailedeer.scorecard.activities.fragments.CourseTabFragment;
-import sailedeer.scorecard.activities.fragments.GameTabFragment;
-import sailedeer.scorecard.activities.fragments.PlayerTabFragment;
 import sailedeer.scorecard.activities.fragments.handling.PagerAdapter;
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.data.Course;
 import sailedeer.scorecard.data.Game;
 import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
+import sailedeer.scorecard.util.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
+    private PagerAdapter adapter;
     private ViewPager pager;
     private TabLayout.Tab mTab;
     private DatabaseHelper mDbHelper;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Courses"));
 
         pager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
+        adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 pager.setCurrentItem(tab.getPosition());
                 mTab = tab;
-
             }
 
             @Override
@@ -72,26 +70,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.course_context_menu, menu);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent)
     {
         setIntent(intent);
         String action = intent.getAction();
-        if (action.equals("ADD_PLAYER"))
+        if (action.equals(Constants.ADD_PLAYER))
         {
-            Player p = (Player) intent.getSerializableExtra("player");
+            Player p = (Player) intent.getSerializableExtra(Constants.K_PLAYER);
             mDbHelper.addPlayer(p);
 
         }
-        else if (action.equals("ADD_COURSE"))
+        else if (action.equals(Constants.ADD_COURSE))
         {
-            Course c = (Course) intent.getSerializableExtra("Course");
+            Course c = (Course) intent.getSerializableExtra(Constants.K_COURSE);
             mDbHelper.addCourse(c);
         }
-
-        else if (action.equals("ADD_GAME"))
+        else if (action.equals(Constants.ADD_PLAYER))
         {
-            Game g = (Game) intent.getSerializableExtra("Game");
+            Game g = (Game) intent.getSerializableExtra(Constants.K_GAME);
             mDbHelper.addGame(g);
         }
+        else if (action.equals(Constants.EDIT_PLAYER))
+        {
+
+        }
+        else if (action.equals(Constants.EDIT_PLAYER))
+        {
+
+        }
+        else if (action.equals(Constants.DEL_PLAYER))
+        {
+
+        }
+        else if (action.equals(Constants.DEL_GAME))
+        {
+
+        }
+        else if (action.equals(Constants.DEL_COURSE))
+        {
+
+        }
+        finish();
+        startActivity(getIntent());
     }
 }

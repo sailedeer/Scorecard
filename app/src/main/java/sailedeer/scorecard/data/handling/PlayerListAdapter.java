@@ -86,28 +86,29 @@ public class PlayerListAdapter extends BaseAdapter implements View.OnClickListen
             holder.playerName.setText(tempValues.getName());
             holder.handicap.setText("Handicap: " + tempValues.getHandicap());
 
-            vi.setOnClickListener(new OnItemClickListener(position));
+            //vi.setOnLongClickListener(new OnItemLongClickListener(position));
         }
         return vi;
     }
 
     public void onClick(View v)
     {
-        //launch some new activity
+
     }
 
-    private class OnItemClickListener implements View.OnClickListener {
+    private class OnItemLongClickListener implements View.OnLongClickListener {
         private int mPosition;
 
-        OnItemClickListener(int position)
+        OnItemLongClickListener(int position)
         {
             mPosition = position;
         }
 
         @Override
-        public void onClick(View arg0)
+        public boolean onLongClick(View arg0)
         {
-            fragment.onItemClick(mPosition);
+            fragment.onItemLongClick(mPosition);
+            return true;
         }
     }
 }

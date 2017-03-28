@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -26,7 +28,6 @@ import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class GameTabFragment extends ListFragment {
 
-    ListView list;
     DatabaseHelper databaseHelper;
     GameListAdapter adapter;
     public GameTabFragment customListView = null;
@@ -47,15 +48,13 @@ public class GameTabFragment extends ListFragment {
 
         setListAdapter(adapter);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
         return viewGroup;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public void onViewCreated(View v, Bundle savedInstanceState)
     {
-        inflater.inflate(R.menu.menu_game, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        registerForContextMenu(getListView());
     }
 
     public void onItemClick(int mPosition)
@@ -66,18 +65,24 @@ public class GameTabFragment extends ListFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.game_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+            case R.id.remove_game:
+                //throw up a toast and ask if the user wants to delete the thing
+                return true;
             case R.id.new_game:
                 Intent intent = new Intent(getContext(), NewGameActivity.class);
                 startActivity(intent);
-                return true;
-            case R.id.remove_game:
-                //remove player here
-                return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return super.onContextItemSelected(item);
         }
     }
 

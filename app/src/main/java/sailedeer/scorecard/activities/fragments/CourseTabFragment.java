@@ -5,12 +5,14 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class CourseTabFragment extends ListFragment{
 
+    Course toEdit;
     ListView list;
     DatabaseHelper dbHelper;
     CourseListAdapter adapter;
@@ -50,8 +53,13 @@ public class CourseTabFragment extends ListFragment{
         adapter = new CourseListAdapter(customListView, customListViewArr, res);
         setListAdapter(adapter);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
         return viewGroup;
+    }
+
+    @Override
+    public void onViewCreated(View v, Bundle savedInstanceState)
+    {
+        registerForContextMenu(getListView());
     }
 
     public void setListData()
@@ -60,33 +68,25 @@ public class CourseTabFragment extends ListFragment{
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.menu_course, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public void onItemClick(int mPosition)
-    {
-        Course tempValues = ( Course ) customListViewArr.get(mPosition);
-        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
-        startActivity(intent);
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.course_context_menu, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.new_course:
-                Intent npIntent = new Intent(getContext(), NewCourseActivity.class);
-                startActivity(npIntent);
-                return true;
-            case R.id.remove_course:
-                //Intent rpIntent = new Intent(getContext(), NewPlayerActivity.class);
-                //startActivity(rpIntent);
+            case R.id.edit_course:
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return super.onContextItemSelected(item);
         }
+    }
+
+    public void onItemLongClick(int mPosition)
+    {
+        toEdit = customListViewArr.get(mPosition);
     }
 }

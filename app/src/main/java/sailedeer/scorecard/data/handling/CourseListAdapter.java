@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import sailedeer.scorecard.activities.fragments.CourseTabFragment;
  */
 
 public class CourseListAdapter extends BaseAdapter implements View.OnClickListener {
+
     private CourseTabFragment fragment;
     private ArrayList data;
     private static LayoutInflater inflater = null;
@@ -85,7 +87,7 @@ public class CourseListAdapter extends BaseAdapter implements View.OnClickListen
             holder.courseName.setText("Course: " + tempValues.getName());
             holder.slope.setText("Slope: " + tempValues.getSlope());
 
-            vi.setOnClickListener(new OnItemClickListener(position));
+            //vi.setOnLongClickListener(new OnItemLongClickListener(position));
         }
         return vi;
     }
@@ -95,18 +97,19 @@ public class CourseListAdapter extends BaseAdapter implements View.OnClickListen
 
     }
 
-    private class OnItemClickListener implements View.OnClickListener {
+    private class OnItemLongClickListener implements View.OnLongClickListener {
         private int mPosition;
 
-        OnItemClickListener(int position)
+        OnItemLongClickListener(int position)
         {
             mPosition = position;
         }
 
         @Override
-        public void onClick(View arg0)
+        public boolean onLongClick(View arg0)
         {
-            fragment.onItemClick(mPosition);
+            fragment.onItemLongClick(mPosition);
+            return true;
         }
     }
 }

@@ -45,10 +45,6 @@ public class Player implements /*Parcelable, */Serializable  {
         this.mHandicap = mHandicap;
     }
 
-    public String geName() {
-        return mName;
-    }
-
 //    protected Player(Parcel in)
 //    {
 //        mId = in.readInt();

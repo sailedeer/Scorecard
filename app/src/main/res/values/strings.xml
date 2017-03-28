@@ -11,6 +11,9 @@
     <string name="add_game_menu_item">New Game</string>
     <string name="add_course_menu_item">New Course</string>
 
+    <string name="edit_course_menu_item">Edit Course</string>
+    <string name="edit_player_menu_item">Edit Player</string>
+
     <string name="remove_player_menu_item">Remove Player</string>
     <string name="remove_game_menu_item">Remove Game</string>
     <string name="remove_course_menu_item">Remove Course</string>

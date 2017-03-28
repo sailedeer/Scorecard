@@ -5,13 +5,16 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,7 +31,7 @@ import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class PlayerTabFragment extends ListFragment {
 
-    ListView list;
+    Player toEdit;
     PlayerListAdapter adapter;
     public PlayerTabFragment customListView = null;
     public ArrayList<Player> customListViewArrs = new ArrayList<>();
@@ -50,45 +53,47 @@ public class PlayerTabFragment extends ListFragment {
 
         setListAdapter(adapter);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
         return viewGroup;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public void onViewCreated(View v, Bundle savedInstanceState)
     {
-        inflater.inflate(R.menu.menu_player, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        registerForContextMenu(getListView());
     }
 
     @Override
-    public void onDestroy()
-    {
-        mDbHelper.close();
-        super.onDestroy();
-    }
-
-    public void onItemClick(int mPosition)
-    {
-        Player tempValues = ( Player ) customListViewArrs.get(mPosition);
-        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
-        startActivity(intent);
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.player_context_menu, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+            case R.id.edit_player:
+                return true;
             case R.id.new_player:
                 Intent intent = new Intent(getContext(), NewPlayerActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.remove_player:
-                //remove player here
-                return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return super.onContextItemSelected(item);
         }
+    }
+
+    public void onItemClick(int mPosition)
+    {
+        //Intent intent = new Intent(getContext(), NewPlayerActivity.class);
+        //startActivity(intent);
+    }
+
+    public void onItemLongClick(int mPosition)
+    {
+        toEdit = customListViewArrs.get(mPosition);
     }
 
     public void setListData()

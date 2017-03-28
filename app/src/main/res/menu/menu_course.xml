@@ -4,7 +4,4 @@
     <item android:title="@string/add_course_menu_item"
         android:id="@+id/new_course"
         />
-    <item android:title="@string/remove_course_menu_item"
-        android:id="@+id/remove_course"
-        />
 </menu>

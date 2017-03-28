@@ -3,6 +3,8 @@ package sailedeer.scorecard.activities.fragments.handling;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import sailedeer.scorecard.activities.fragments.CourseTabFragment;
 import sailedeer.scorecard.activities.fragments.GameTabFragment;
@@ -13,6 +15,7 @@ import sailedeer.scorecard.activities.fragments.PlayerTabFragment;
  */
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
+    SparseArray<Fragment> registeredFragments = new SparseArray<>();
     PlayerTabFragment tab1;
     GameTabFragment tab2;
     CourseTabFragment tab3;
@@ -43,19 +46,26 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public void updateLists()
-    {
-        if (tab1 != null && tab2 != null && tab3 != null)
-        {
-            tab1.setListData();
-            tab2.setListData();
-            tab3.setListData();
-        }
-    }
-
     @Override
     public int getCount()
     {
         return mNumOfTabs;
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        registeredFragments.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    public Fragment getRegisteredFragment(int position) {
+        return registeredFragments.get(position);
     }
 }
