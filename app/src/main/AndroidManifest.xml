@@ -8,18 +8,35 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity" android:launchMode="singleTask">
-
+        <activity
+            android:name=".activities.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.NewGameActivity" />
-        <activity android:name=".activities.NewPlayerActivity" />
-        <activity android:name=".activities.NewCourseActivity" />
-        <activity android:name=".activities.GameActivity"></activity>
+        <activity
+            android:label="New Game"
+            android:theme="@style/AppTheme"
+            android:name=".activities.NewGameActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:label="New Player"
+            android:theme="@style/AppTheme"
+            android:name=".activities.NewPlayerActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:label="New Course"
+            android:theme="@style/AppTheme"
+            android:name=".activities.NewCourseActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:label="Scorecar"
+            android:theme="@style/AppTheme"
+            android:name=".activities.GameActivity"
+            android:parentActivityName=".activities.MainActivity" />
     </application>
 
 </manifest>
