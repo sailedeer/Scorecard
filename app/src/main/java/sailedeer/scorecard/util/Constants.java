@@ -26,4 +26,6 @@ public final class Constants {
     public static final String K_COURSE = "course";
     public static final String K_GAME = "game";
 
+    // other consts
+    public static final String BOOL_EDIT = "edit";
 }
