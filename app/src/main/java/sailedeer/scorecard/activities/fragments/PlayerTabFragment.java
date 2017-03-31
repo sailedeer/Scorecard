@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.activities.NewCourseActivity;
@@ -24,6 +25,7 @@ import sailedeer.scorecard.activities.NewPlayerActivity;
 import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.data.handling.PlayerListAdapter;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
+import sailedeer.scorecard.util.Constants;
 
 /**
  * Created by Eli on 3/7/2017.
@@ -65,21 +67,38 @@ public class PlayerTabFragment extends ListFragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.player_context_menu, menu);
+
+        try {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.player_context_menu, menu);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Intent intent = new Intent(getContext(), NewPlayerActivity.class);
         switch (item.getItemId()) {
             case R.id.edit_player:
+                toEdit = adapter.getItem(info.position);
+                boolean edit = true;
+                intent.setAction(Constants.EDIT_PLAYER);
+                intent.putExtra(Constants.K_PLAYER, toEdit);
+                intent.putExtra(Constants.BOOL_EDIT, edit);
+                startActivity(intent);
                 return true;
             case R.id.new_player:
-                Intent intent = new Intent(getContext(), NewPlayerActivity.class);
+                intent.setAction(Constants.ADD_PLAYER);
                 startActivity(intent);
                 return true;
             case R.id.remove_player:
+                toEdit = adapter.getItem(info.position);
+                mDbHelper.removePlayer(toEdit);
+                //getActivity().finish();
+                startActivity(getActivity().getIntent());
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }

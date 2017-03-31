@@ -21,7 +21,7 @@ import sailedeer.scorecard.activities.fragments.PlayerTabFragment;
 public class PlayerListAdapter extends BaseAdapter implements View.OnClickListener {
 
     private PlayerTabFragment fragment;
-    private ArrayList data;
+    private ArrayList<Player> data;
     private static LayoutInflater inflater = null;
     public Resources res;
     Player tempValues = null;
@@ -43,9 +43,9 @@ public class PlayerListAdapter extends BaseAdapter implements View.OnClickListen
         return data.size();
     }
 
-    public Object getItem(int position)
+    public Player getItem(int position)
     {
-        return position;
+        return data.get(position);
     }
 
     public long getItemId(int position)
@@ -77,8 +77,10 @@ public class PlayerListAdapter extends BaseAdapter implements View.OnClickListen
         else
             holder = (PlayerListAdapter.ViewHolder)vi.getTag();
 
-        if (data.size()<=0)
+        if (data.size()<=0) {
             holder.playerName.setText("No Data");
+            holder.handicap.setText("");
+        }
         else
         {
             tempValues = null;

@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.data.Player;
+import sailedeer.scorecard.util.Constants;
 
 public class NewPlayerActivity extends AppCompatActivity {
 
@@ -40,14 +41,14 @@ public class NewPlayerActivity extends AppCompatActivity {
 
         addPlayer.setOnClickListener(new AddPlayerOnClickListener());
 
-        if (getIntent().getAction().equals("EDIT_PLAYER"))
+        if (getIntent().getAction().equals(Constants.EDIT_PLAYER))
         {
             isEditing = true;
         }
 
         if (isEditing) {
             ab.setTitle("Edit Player");
-            toEdit = (Player) getIntent().getSerializableExtra("Player");
+            toEdit = (Player) getIntent().getSerializableExtra(Constants.K_PLAYER);
             edtName.setText(toEdit.getName());
             edtHandicap.setText(toEdit.getHandicap());
             addPlayer.setText("Save Player");
@@ -74,9 +75,9 @@ public class NewPlayerActivity extends AppCompatActivity {
                         if (isEditing) p.setId(toEdit.getId());
                         newPlayerIntent = new Intent();
                         newPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        newPlayerIntent.setAction(isEditing ? "EDIT_PLAYER" : "ADD_PLAYER");
+                        newPlayerIntent.setAction(isEditing ? Constants.EDIT_PLAYER : Constants.ADD_PLAYER);
                         newPlayerIntent.setClass(getApplicationContext(), MainActivity.class);
-                        newPlayerIntent.putExtra("player", p);
+                        newPlayerIntent.putExtra(Constants.K_PLAYER, p);
                         startActivity(newPlayerIntent);
                     }
                 }

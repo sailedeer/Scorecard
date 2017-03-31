@@ -348,4 +348,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_GAME, null, cv);
         db.close();
     }
+
+    public void removePlayer(Player p)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_PLAYER, "id = ?", new String[] {String.valueOf(p.getId())});
+        db.close();
+    }
+
+    public void removeGame(Game g)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_GAME, "id = ?", new String[] {String.valueOf(g.getID())});
+        db.close();
+    }
+
+    public void removeCourse(Course c)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_PLAYER, "id = ?", new String[] {String.valueOf(c.getID())});
+        db.close();
+    }
 }
