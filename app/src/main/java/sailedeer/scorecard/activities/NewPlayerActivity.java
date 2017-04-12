@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.data.Player;
@@ -50,7 +51,7 @@ public class NewPlayerActivity extends AppCompatActivity {
             ab.setTitle("Edit Player");
             toEdit = (Player) getIntent().getSerializableExtra(Constants.K_PLAYER);
             edtName.setText(toEdit.getName());
-            edtHandicap.setText(toEdit.getHandicap());
+            edtHandicap.setText(Integer.toString(toEdit.getHandicap()));
             addPlayer.setText("Save Player");
         }
     }
@@ -64,12 +65,15 @@ public class NewPlayerActivity extends AppCompatActivity {
                 try {
                     int handicap = Integer.parseInt(edtHandicap.getText().toString());
 
-                    if (name.isEmpty() && handicap == 0) {
-                        //this is way wrong
+                    if (edtName.getText().equals("") || edtHandicap.getText().equals("")) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data", Toast.LENGTH_LONG);
+                        toast.show();
                     } else if (name.isEmpty()) {
-                        //throw some kind of error
+                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data", Toast.LENGTH_LONG);
+                        toast.show();
                     } else if (handicap == 0) {
-                        //throw some other kind of error
+                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data", Toast.LENGTH_LONG);
+                        toast.show();
                     } else {
                         Player p = new Player(name, handicap);
                         if (isEditing) p.setId(toEdit.getId());
@@ -77,6 +81,7 @@ public class NewPlayerActivity extends AppCompatActivity {
                         newPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         newPlayerIntent.setAction(isEditing ? Constants.EDIT_PLAYER : Constants.ADD_PLAYER);
                         newPlayerIntent.setClass(getApplicationContext(), MainActivity.class);
+                        //if (isEditing) newPlayerIntent.putExtra(Constants.K_PLAYER + "_edit", toEdit);
                         newPlayerIntent.putExtra(Constants.K_PLAYER, p);
                         startActivity(newPlayerIntent);
                     }

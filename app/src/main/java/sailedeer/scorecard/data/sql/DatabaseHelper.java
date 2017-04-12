@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sailedeer.scorecard.data.Course;
 import sailedeer.scorecard.data.Game;
@@ -326,7 +325,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(KEY_COURSE_ID, g.getCourse().getID());
+        cv.put(KEY_COURSE_ID, g.getCourse().getId());
         int[] scores = g.getRoundScore();
         String strScores = "";
 
@@ -349,6 +348,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void replacePlayer(Player p)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_PLAYER_NAME, p.getName());
+        cv.put(KEY_HANDICAP, p.getHandicap());
+        getWritableDatabase().update(TABLE_PLAYER, cv, KEY_ID + " = " + p.getId(), null);
+    }
+
+    public void replaceCourse(Course c)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_COURSE, c.getName());
+        cv.put(KEY_SLOPE, c.getSlope());
+        getWritableDatabase().update(TABLE_COURSE, cv, KEY_ID + " = " + c.getId(), null);
+    }
+
     public void removePlayer(Player p)
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -359,14 +374,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void removeGame(Game g)
     {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_GAME, "id = ?", new String[] {String.valueOf(g.getID())});
+        db.delete(TABLE_GAME, "id = ?", new String[] {String.valueOf(g.getId())});
         db.close();
     }
 
     public void removeCourse(Course c)
     {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_PLAYER, "id = ?", new String[] {String.valueOf(c.getID())});
+        db.delete(TABLE_COURSE, "id = ?", new String[] {String.valueOf(c.getId())});
         db.close();
     }
 }

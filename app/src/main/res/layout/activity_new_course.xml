@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_new_course"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_new_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="sailedeer.scorecard.activities.NewCourseActivity">
+    tools:context="sailedeer.scorecard.activities.NewPlayerActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_nc"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <EditText
+        android:id="@+id/edtTxtCourseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/txtCourseName"
+        android:layout_toEndOf="@+id/txtCourseName"
+        android:ems="10"
+        android:inputType="text|textPersonName" />
 
     <Button
-        android:id="@+id/btn_add_course"
+        android:id="@+id/btnAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -19,4 +35,33 @@
         android:layout_alignParentStart="true"
         android:text="Add Course" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/txtCourseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textSize="32sp"
+        android:layout_marginTop="116dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/edtTxtSlope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:layout_alignBaseline="@+id/txtSlope"
+        android:layout_alignBottom="@+id/txtSlope"
+        android:layout_toEndOf="@+id/txtSlope" />
+
+    <TextView
+        android:id="@+id/txtSlope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Handicap:"
+        android:textSize="32sp"
+        android:layout_below="@+id/txtCourseName"
+        android:layout_alignParentStart="true" />
+
+    </RelativeLayout>

@@ -44,5 +44,5 @@ public class Course implements Serializable {
         return mSlope;
     }
 
-    public int getID() { return mId; }
+    public int getId() { return mId; }
 }

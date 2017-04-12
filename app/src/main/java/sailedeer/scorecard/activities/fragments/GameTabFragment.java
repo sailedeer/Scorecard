@@ -1,25 +1,25 @@
 package sailedeer.scorecard.activities.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.activities.NewGameActivity;
 import sailedeer.scorecard.data.Game;
-import sailedeer.scorecard.data.handling.GameListAdapter;
+import sailedeer.scorecard.activities.fragments.handling.GameFragmentListAdapter;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 /**
@@ -28,21 +28,22 @@ import sailedeer.scorecard.data.sql.DatabaseHelper;
 
 public class GameTabFragment extends ListFragment {
 
-    DatabaseHelper databaseHelper;
-    GameListAdapter adapter;
+    Game toEdit;
+    DatabaseHelper mDbHelper;
+    GameFragmentListAdapter adapter;
     public GameTabFragment customListView = null;
     public ArrayList<Game> customListViewArrs = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        databaseHelper = new DatabaseHelper(getContext());
+        mDbHelper = new DatabaseHelper(getContext());
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.tab_layout, container, false);
         customListView = this;
 
         Resources res = getResources();
 
-        adapter = new GameListAdapter(customListView, customListViewArrs, res);
+        adapter = new GameFragmentListAdapter(customListView, customListViewArrs, res);
 
         setListData();
 
@@ -57,18 +58,13 @@ public class GameTabFragment extends ListFragment {
         registerForContextMenu(getListView());
     }
 
-    public void onItemClick(int mPosition)
-    {
-        Game tempValues = ( Game ) customListViewArrs.get(mPosition);
-        Intent intent = new Intent(getContext(), NewGameActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.game_context_menu, menu);
+        inflater.inflate(
+                adapter.getSize() <= 0 ? R.menu.game_context_menu_editless : R.menu.game_context_menu,
+                menu);
     }
 
     @Override
@@ -76,7 +72,24 @@ public class GameTabFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.remove_game:
-                //throw up a toast and ask if the user wants to delete the thing
+                toEdit = adapter.getItem(info.position);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Player")
+                        .setMessage("Are you sure you want to delete this player?")
+                        .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDbHelper.removeGame(toEdit);
+                                adapter.remove(toEdit);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 return true;
             case R.id.new_game:
                 Intent intent = new Intent(getContext(), NewGameActivity.class);

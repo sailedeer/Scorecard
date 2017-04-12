@@ -3,12 +3,16 @@ package sailedeer.scorecard.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by sailedeer7 on 2/13/2017.
  */
 
-public class Game implements Parcelable {
+public class Game implements Serializable {
 
+    Press mFrontPress;
+    Press mBackPress;
     private Player[] mPlayers;
     private Course mCourse;
     private int[] mRoundScore;
@@ -44,6 +48,10 @@ public class Game implements Parcelable {
         this.mId = mId;
     }
 
+    public void setFrontPress(Press p) { mFrontPress = p; }
+
+    public void setBackPress(Press p) {mBackPress = p;}
+
     public Player[] getPlayers() {
         return mPlayers;
     }
@@ -60,38 +68,17 @@ public class Game implements Parcelable {
         return mCurrentHole;
     }
 
-    public int getID() {
+    public int getId() {
         return mId;
     }
 
-    protected Game(Parcel in) {
-        mCourse = (Course) in.readValue(Course.class.getClassLoader());
-        mCurrentHole = in.readInt();
-        mId = in.readInt();
+    public Press getFrontPress()
+    {
+        return mFrontPress;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public Press getBackPress(){
+        return mBackPress;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(mCourse);
-        dest.writeInt(mCurrentHole);
-        dest.writeInt(mId);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Game> CREATOR = new Parcelable.Creator<Game>() {
-        @Override
-        public Game createFromParcel(Parcel in) {
-            return new Game(in);
-        }
-
-        @Override
-        public Game[] newArray(int size) {
-            return new Game[size];
-        }
-    };
 }

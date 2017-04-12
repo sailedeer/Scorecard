@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Press {
     private int mPressScore;
 
-
     public int getPressScore() {
         return mPressScore;
     }

@@ -1,29 +1,26 @@
 package sailedeer.scorecard.activities.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sailedeer.scorecard.R;
-import sailedeer.scorecard.activities.NewCourseActivity;
 import sailedeer.scorecard.activities.NewPlayerActivity;
 import sailedeer.scorecard.data.Player;
-import sailedeer.scorecard.data.handling.PlayerListAdapter;
+import sailedeer.scorecard.activities.fragments.handling.PlayerFragmentListAdapter;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
 import sailedeer.scorecard.util.Constants;
 
@@ -34,7 +31,7 @@ import sailedeer.scorecard.util.Constants;
 public class PlayerTabFragment extends ListFragment {
 
     Player toEdit;
-    PlayerListAdapter adapter;
+    PlayerFragmentListAdapter adapter;
     public PlayerTabFragment customListView = null;
     public ArrayList<Player> customListViewArrs = new ArrayList<>();
     private SQLiteDatabase db;
@@ -51,7 +48,7 @@ public class PlayerTabFragment extends ListFragment {
 
         setListData();
 
-        adapter = new PlayerListAdapter(customListView, customListViewArrs, res);
+        adapter = new PlayerFragmentListAdapter(customListView, customListViewArrs, res);
 
         setListAdapter(adapter);
         setRetainInstance(true);
@@ -70,7 +67,9 @@ public class PlayerTabFragment extends ListFragment {
 
         try {
             MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.player_context_menu, menu);
+            inflater.inflate(
+                    adapter.getSize() == 0 ? R.menu.player_context_menu_editless : R.menu.player_context_menu,
+                    menu);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,23 +80,35 @@ public class PlayerTabFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Intent intent = new Intent(getContext(), NewPlayerActivity.class);
         switch (item.getItemId()) {
-            case R.id.edit_player:
-                toEdit = adapter.getItem(info.position);
-                boolean edit = true;
-                intent.setAction(Constants.EDIT_PLAYER);
-                intent.putExtra(Constants.K_PLAYER, toEdit);
-                intent.putExtra(Constants.BOOL_EDIT, edit);
-                startActivity(intent);
-                return true;
             case R.id.new_player:
                 intent.setAction(Constants.ADD_PLAYER);
                 startActivity(intent);
                 return true;
+            case R.id.edit_player:
+                toEdit = adapter.getItem(info.position);
+                intent.setAction(Constants.EDIT_PLAYER);
+                intent.putExtra(Constants.K_PLAYER, toEdit);
+                startActivity(intent);
+                return true;
             case R.id.remove_player:
                 toEdit = adapter.getItem(info.position);
-                mDbHelper.removePlayer(toEdit);
-                //getActivity().finish();
-                startActivity(getActivity().getIntent());
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Player")
+                        .setMessage("Are you sure you want to delete this player?")
+                        .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDbHelper.removePlayer(toEdit);
+                                adapter.remove(toEdit);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -120,5 +131,11 @@ public class PlayerTabFragment extends ListFragment {
         customListViewArrs = mDbHelper.getAllPlayers();
     }
 
+    public PlayerFragmentListAdapter getAdapter() {return adapter;}
 
+    public void updateList(Player toReplace, Player replace)
+    {
+        int i = customListViewArrs.indexOf(toReplace);
+        customListViewArrs.set(i, replace);
+    }
 }
