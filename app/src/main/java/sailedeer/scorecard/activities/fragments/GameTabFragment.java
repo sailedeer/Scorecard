@@ -32,7 +32,7 @@ public class GameTabFragment extends ListFragment {
     DatabaseHelper mDbHelper;
     GameFragmentListAdapter adapter;
     public GameTabFragment customListView = null;
-    public ArrayList<Game> customListViewArrs = new ArrayList<>();
+    public ArrayList<Game> customListViewArr = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class GameTabFragment extends ListFragment {
 
         Resources res = getResources();
 
-        adapter = new GameFragmentListAdapter(customListView, customListViewArrs, res);
+        adapter = new GameFragmentListAdapter(customListView, customListViewArr, res);
 
         setListData();
 
@@ -101,6 +101,6 @@ public class GameTabFragment extends ListFragment {
 
     public void setListData()
     {
-        //customListViewArrs = databaseHelper.getAllGames();
+        //customListViewArr = databaseHelper.getAllGames();
     }
 }

@@ -15,7 +15,7 @@ import sailedeer.scorecard.data.Course;
 import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.util.Constants;
 
-public class NewCourseActivity extends AppCompatActivity {
+public class NewCourseActivity extends AppCompatActivity implements View.OnClickListener{
 
     Course toEdit;
     private Intent newCourseIntent;
@@ -39,7 +39,7 @@ public class NewCourseActivity extends AppCompatActivity {
         edtTxtName = (EditText) findViewById(R.id.edtTxtCourseName);
         btnAddCourse = (Button) findViewById(R.id.btnAddCourse);
 
-        btnAddCourse.setOnClickListener(new AddCourseOnClickListener());
+        btnAddCourse.setOnClickListener(this);
 
         if (getIntent().getAction().equals(Constants.EDIT_COURSE))
         {
@@ -55,42 +55,39 @@ public class NewCourseActivity extends AppCompatActivity {
         }
     }
 
-    class AddCourseOnClickListener implements View.OnClickListener
+    @Override
+    public void onClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            try{
-                String name = edtTxtName.getText().toString();
-                try {
-                    int slope = Integer.parseInt(edtTxtSlope.getText().toString());
-                    if (edtTxtName.getText().equals("") || edtTxtSlope.getText().equals("")) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data1", Toast.LENGTH_LONG);
-                        toast.show();
-                    } else if (name.isEmpty()) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data2", Toast.LENGTH_LONG);
-                        toast.show();
-                    } else if (slope == 0) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Bad data3", Toast.LENGTH_LONG);
-                        toast.show();
-                    } else {
-                        Course c = new Course(name, slope);
-                        if (isEditing) c.setId(toEdit.getId());
-                        newCourseIntent = new Intent();
-                        newCourseIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        newCourseIntent.setAction(isEditing ? Constants.EDIT_COURSE : Constants.ADD_COURSE);
-                        newCourseIntent.setClass(getApplicationContext(), MainActivity.class);
-                        //if (isEditing) newCourseIntent.putExtra(Constants.K_COURSE + "_edit", toEdit);
-                        newCourseIntent.putExtra(Constants.K_COURSE, c);
-                        startActivity(newCourseIntent);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try{
+            String name = edtTxtName.getText().toString();
+            try {
+                int slope = Integer.parseInt(edtTxtSlope.getText().toString());
+                if (edtTxtName.getText().equals("") || edtTxtSlope.getText().equals("")) {
+                    Toast toast = Toast.makeText(this, "Bad data1", Toast.LENGTH_LONG);
+                    toast.show();
+                } else if (name.isEmpty()) {
+                    Toast toast = Toast.makeText(this, "Bad data2", Toast.LENGTH_LONG);
+                    toast.show();
+                } else if (slope == 0) {
+                    Toast toast = Toast.makeText(this, "Bad data3", Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    Course c = new Course(name, slope);
+                    if (isEditing) c.setId(toEdit.getId());
+                    newCourseIntent = new Intent();
+                    newCourseIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    newCourseIntent.setAction(isEditing ? Constants.EDIT_COURSE : Constants.ADD_COURSE);
+                    newCourseIntent.setClass(this, MainActivity.class);
+                    //if (isEditing) newCourseIntent.putExtra(Constants.K_COURSE + "_edit", toEdit);
+                    newCourseIntent.putExtra(Constants.K_COURSE, c);
+                    startActivity(newCourseIntent);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            catch (Exception sne) {
-                sne.printStackTrace();
-            }
+        }
+        catch (Exception sne) {
+            sne.printStackTrace();
         }
     }
 }

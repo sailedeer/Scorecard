@@ -1,6 +1,8 @@
 package sailedeer.scorecard.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,19 +20,25 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.data.Course;
+import sailedeer.scorecard.data.Game;
 import sailedeer.scorecard.data.Player;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
+import sailedeer.scorecard.util.Constants;
 
 public class NewGameActivity extends AppCompatActivity {
+
+    Context context;
 
     Spinner spinnerCourses;
     Spinner spinnerPlayers;
     RadioButton rbFour;
     RadioButton rbFive;
     Button buttonAddPlayer;
+    Button buttonStartGame;
     ListView playerListView;
 
     boolean fourChecked = false;
@@ -63,6 +71,8 @@ public class NewGameActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        context = this;
+
         mDbHelper = new DatabaseHelper(this);
 
         playerListViewAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
@@ -86,24 +96,25 @@ public class NewGameActivity extends AppCompatActivity {
         rbFive = (RadioButton) findViewById(R.id.radio_button_five_p);
         buttonAddPlayer = (Button) findViewById(R.id.button_add_player);
         playerListView = (ListView) findViewById(R.id.list_selected_players);
+        buttonStartGame = (Button) findViewById(R.id.button_start_game);
 
         rbFour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) maxPlayers = 4;
 
                 fourChecked = isChecked;
-                fiveChecked = !isChecked;
+                if (fourChecked) maxPlayers = 4;
+                else maxPlayers = 5;
             }
         });
 
         rbFive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) maxPlayers = 5;
 
-                fourChecked = !isChecked;
                 fiveChecked = isChecked;
+                if (isChecked) maxPlayers = 5;
+                else maxPlayers = 4;
             }
         });
 
@@ -131,12 +142,14 @@ public class NewGameActivity extends AppCompatActivity {
         spinnerPlayers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tempPlayerSelected = getPlayer((String) parent.getItemAtPosition(position));
+                //tempPlayerSelected = getPlayer((String) parent.getItemAtPosition(position));
+                int item = spinnerPlayers.getSelectedItemPosition();
+                tempPlayerSelected = getPlayer(playerSpinAdapter.getItem(item));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                //do nothing for now
+                //tempPlayerSelected = getPlayer((String)parent.getItemAtPosition(0));    //if there is no selection, choose the first available item
             }
         });
 
@@ -147,10 +160,11 @@ public class NewGameActivity extends AppCompatActivity {
                     if (tempPlayerSelected != null) {
                         selectedPlayers.add(tempPlayerSelected);
                         playerListViewAdapter.add(tempPlayerSelected.getName());
-                        tempPlayerSelected = null;
+                        playerSpinAdapter.remove(tempPlayerSelected.getName());
+                        spinnerPlayers.setAdapter(playerSpinAdapter);   //updates adapter with new data set
                     }
                     else {
-                        new AlertDialog.Builder(getApplicationContext())
+                        new AlertDialog.Builder(context)
                                 .setTitle("No Selection")
                                 .setMessage("Please select a player before adding them to this game.")
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -159,11 +173,12 @@ public class NewGameActivity extends AppCompatActivity {
                                         //do nothing
                                     }
                                 })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
                     }
                 }
                 else {
-                    new AlertDialog.Builder(getApplicationContext())
+                    new AlertDialog.Builder(context)
                             .setTitle("Too Many Players")
                             .setMessage("You have selected too many players. Change your selection to add more.")
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -172,7 +187,40 @@ public class NewGameActivity extends AppCompatActivity {
                                     //do nothing
                                 }
                             })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
+                }
+            }
+        });
+
+        buttonStartGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedPlayers.size() < maxPlayers) {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Not Enough Players")
+                            .setMessage("You haven't selected enough players.")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                else {
+                    Intent newGameIntent = new Intent(context, GameActivity.class);
+                    Player[] temp = new Player[selectedPlayers.size()];
+
+                    for(int i = 0; i < selectedPlayers.size(); i++)
+                    {
+                        temp[i] = selectedPlayers.get(i);
+                    }
+                    Game game = new Game(selectedCourse, temp);
+                    newGameIntent.setAction(Constants.START_GAME);
+                    newGameIntent.putExtra(Constants.K_GAME, game);
+                    startActivity(newGameIntent);
                 }
             }
         });
@@ -202,6 +250,7 @@ public class NewGameActivity extends AppCompatActivity {
                             .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     playerListViewAdapter.remove(toRemove);
+                                    playerSpinAdapter.add(toRemove);
                                     selectedPlayers.remove(getPlayer(toRemove));
                                 }
                             })

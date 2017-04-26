@@ -3,19 +3,14 @@ package sailedeer.scorecard.activities;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.View;
 
-import sailedeer.scorecard.activities.fragments.CourseTabFragment;
-import sailedeer.scorecard.activities.fragments.GameTabFragment;
-import sailedeer.scorecard.activities.fragments.PlayerTabFragment;
 import sailedeer.scorecard.activities.fragments.handling.PagerAdapter;
 import sailedeer.scorecard.R;
 import sailedeer.scorecard.data.Course;
@@ -115,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         else if (action.equals(Constants.EDIT_PLAYER)) {
             try {
                 Player p = (Player) intent.getSerializableExtra(Constants.K_PLAYER);
-                //Player toEdit = (Player) intent.getSerializableExtra(Constants.K_PLAYER + "_edit");
                 mDbHelper.replacePlayer(p);
                 adapter.getRegisteredFragment(0).notify();
                 pager.setCurrentItem(0);
@@ -127,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         else if (action.equals(Constants.EDIT_COURSE)) {
             try{
                 Course c = (Course) intent.getSerializableExtra(Constants.K_COURSE);
-                //Course toEdit = (Course) intent.getSerializableExtra(Constants.K_COURSE + "_edit");
                 mDbHelper.replaceCourse(c);
                 adapter.getRegisteredFragment(2).notify();
                 pager.setCurrentItem(2);

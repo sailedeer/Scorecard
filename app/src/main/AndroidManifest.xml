@@ -33,7 +33,7 @@
             android:name=".activities.NewCourseActivity"
             android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:label="Scorecar"
+            android:label="Scorecard"
             android:theme="@style/AppTheme"
             android:name=".activities.GameActivity"
             android:parentActivityName=".activities.MainActivity" />

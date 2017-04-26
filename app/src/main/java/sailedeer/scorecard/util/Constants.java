@@ -11,6 +11,7 @@ public final class Constants {
     public static final String ADD_PLAYER = "sailedeer.scorecard.util.ADD_PLAYER";
     public static final String ADD_GAME = "sailedeer.scorecard.util.ADD_GAME";
     public static final String ADD_COURSE = "sailedeer.scorecard.util.ADD_COURSE";
+    public static final String START_GAME = "sailedeer.scorecard.util.START_GAME";
 
     // remove actions
     public static final String DEL_PLAYER = "sailedeer.scorecard.util.DEL_PLAYER";
