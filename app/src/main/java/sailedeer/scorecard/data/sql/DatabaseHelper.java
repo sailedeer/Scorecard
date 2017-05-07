@@ -59,17 +59,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database create statements
     private static final String CREATE_TABLE_PLAYER = "CREATE TABLE " +
-            TABLE_PLAYER + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            TABLE_PLAYER + " ( " + KEY_ID + " INTEGER PRIMARY KEY, " +
             KEY_PLAYER_NAME + " TEXT, " + KEY_HANDICAP + " INTEGER " +
             ")";
 
     private static final String CREATE_TABLE_GAME = "CREATE TABLE " +
-            TABLE_GAME + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_COURSE_ID +
+            TABLE_GAME + " ( " + KEY_ID + " INTEGER PRIMARY KEY, " + KEY_COURSE_ID +
             " INTEGER, " + KEY_PLAYER_IDS + " TEXT, " +
             KEY_HOLE + " INTEGER, " + KEY_SCORES + " TEXT " + ")";
 
     private static final String CREATE_TABLE_COURSE = "CREATE TABLE " +
-            TABLE_COURSE + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            TABLE_COURSE + " ( " + KEY_ID + " INTEGER PRIMARY KEY, " +
             KEY_COURSE + " TEXT, " + KEY_SLOPE + " INTEGER " + ")";
 
     public DatabaseHelper(Context context) {
@@ -103,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //fetch all games
     public ArrayList<Game> getAllGames() {
         ArrayList<Game> games = new ArrayList<>();
-        String[] pIds;
+        int[] pIds;
         Player[] players;
         int[] scores;
         SQLiteDatabase db = getReadableDatabase();
@@ -117,11 +117,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 //split ids from db into array
-                pIds = c.getString(c.getColumnIndex(KEY_PLAYER_IDS)).split(",");
+                String[] strPIds = c.getString(c.getColumnIndex(KEY_PLAYER_IDS)).split(",");
+                pIds = new int[strPIds.length];
+                for (int j = 0; j < strPIds.length; j++) {
+                    pIds[j] = Integer.parseInt(strPIds[j].trim());
+                }
                 //now add those ids to int[] to pass into method that gets players
                 players = new Player[pIds.length];
                 for (int i = 0; i < pIds.length; i++) {
-                    players[i] = getPlayer(Integer.parseInt(pIds[i]));
+                    players[i] = getPlayer(pIds[i]);
                 }
 
                 //split comma-delineated scores into int[]
@@ -138,6 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 game.setPlayers(players);
                 game.setRoundScore(scores);
                 game.setCurrentHole(c.getInt(c.getColumnIndex(KEY_HOLE)));
+                games.add(game);
             } while (c.moveToNext());
         }
 
@@ -289,14 +294,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-        Player player = new Player();
-        player.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        player.setName(c.getString(c.getColumnIndex(KEY_PLAYER_NAME)));
-        player.setHandicap(c.getInt(c.getColumnIndex(KEY_HANDICAP)));
+        if (c.moveToFirst()) {
+            Player player = new Player();
+            player.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+            player.setName(c.getString(c.getColumnIndex(KEY_PLAYER_NAME)));
+            player.setHandicap(c.getInt(c.getColumnIndex(KEY_HANDICAP)));
 
-        c.close();
-        db.close();
-        return player;
+            c.close();
+            db.close();
+            return player;
+        }
+        else return null;
     }
 
     public void addPlayer(Player p)
@@ -338,8 +346,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // get array of player ids, convert to string
         String pIds = "";
+        Player[] players = g.getPlayers();
         for (int j = 0; j < g.getPlayers().length; j++) {
-            pIds += g.getPlayers()[j] + (j < g.getPlayers().length - 1 ? "," : "");
+            pIds += players[j].getId() + (j < g.getPlayers().length - 1 ? "," : "");
         }
         cv.put(KEY_PLAYER_IDS, pIds);
         cv.put(KEY_HOLE, g.getCurrentHole());

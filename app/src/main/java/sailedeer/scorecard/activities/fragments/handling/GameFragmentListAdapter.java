@@ -15,12 +15,14 @@ import sailedeer.scorecard.R;
 import sailedeer.scorecard.activities.GameActivity;
 import sailedeer.scorecard.data.Game;
 import sailedeer.scorecard.activities.fragments.GameTabFragment;
+import sailedeer.scorecard.data.Player;
+import sailedeer.scorecard.util.Constants;
 
 /**
  * Created by Eli on 3/8/2017.
  */
 
-public class GameFragmentListAdapter extends BaseAdapter implements View.OnClickListener {
+public class GameFragmentListAdapter extends BaseAdapter {
 
     private GameTabFragment fragment;
     private ArrayList<Game> data;
@@ -70,7 +72,7 @@ public class GameFragmentListAdapter extends BaseAdapter implements View.OnClick
 
     public static class ViewHolder
     {
-        public TextView gameName;
+        public TextView playerNames;
         public TextView courseName;
         public TextView currentHole;
     }
@@ -85,9 +87,9 @@ public class GameFragmentListAdapter extends BaseAdapter implements View.OnClick
             vi = inflater.inflate(R.layout.game_row_layout, null);
 
             holder = new ViewHolder();
-//            holder.gameName = (TextView) vi.findViewById(R.id.player_name);
-//            holder.courseName = (TextView) vi.findViewById(R.id.handicap);
-//            holder.currentHole = (TextView) vi.findViewById(R.id.hole);
+            holder.playerNames = (TextView) vi.findViewById(R.id.game_tab_players);
+            holder.courseName = (TextView) vi.findViewById(R.id.game_tab_course);
+            holder.currentHole = (TextView) vi.findViewById(R.id.game_tab_hole);
 
             vi.setTag(holder);
         }
@@ -95,27 +97,30 @@ public class GameFragmentListAdapter extends BaseAdapter implements View.OnClick
             holder = (ViewHolder)vi.getTag();
 
         if (data.size()<=0) {
-//            holder.gameName.setText("No Data");
-//            holder.courseName.setText("");
-//            holder.currentHole.setText("");
+            holder.playerNames.setText("No games");
+            holder.courseName.setText("");
+            holder.currentHole.setText("");
+
+            holder.playerNames.setGravity(50);
         }
         else
-//        {
-//            tempValues = null;
-//            tempValues = (Game)data.get(position);
-//
-//            holder.courseName.setText("Course: " + tempValues.getCourseName());
-//            holder.currentHole.setText("Current Hole: " + tempValues.getCurrentHole());
+        {
+            tempValues = null;
+            tempValues = data.get(position);
+
+            String initials = "";
+            Player[] players = tempValues.getPlayers();
+            for (int j = 0; j < players.length; j++) {
+                initials += players[j].getInitials() + (j == players.length - 1 ? "" : ", ");
+            }
+
+            holder.playerNames.setText(initials);
+            holder.courseName.setText("Course: " + tempValues.getCourse().getName());
+            holder.currentHole.setText("Current Hole: " + tempValues.getCurrentHole());
 
             vi.setOnClickListener(new OnItemClickListener(position));
-//        }
+        }
         return vi;
-    }
-
-    public void onClick(View v)
-    {
-        Intent intent = new Intent(fragment.getContext(), GameActivity.class);
-        fragment.startActivity(intent);
     }
 
     private class OnItemClickListener implements View.OnClickListener {
@@ -129,7 +134,7 @@ public class GameFragmentListAdapter extends BaseAdapter implements View.OnClick
         @Override
         public void onClick(View arg0)
         {
-            //fragment.onItemClick(mPosition);
+            fragment.onClick(mPosition);
         }
     }
 }

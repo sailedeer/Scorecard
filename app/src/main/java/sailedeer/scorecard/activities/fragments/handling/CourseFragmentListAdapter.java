@@ -90,10 +90,8 @@ public class CourseFragmentListAdapter extends BaseAdapter implements View.OnCli
         {
             tempValues = null;
             tempValues = data.get(position);
-            holder.courseName.setText("Course: " + tempValues.getName());
+            holder.courseName.setText(tempValues.getName());
             holder.slope.setText("Slope: " + tempValues.getSlope());
-
-            //vi.setOnLongClickListener(new OnItemLongClickListener(position));
         }
         return vi;
     }

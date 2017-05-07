@@ -13,14 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import sailedeer.scorecard.R;
+import sailedeer.scorecard.activities.GameActivity;
 import sailedeer.scorecard.activities.NewGameActivity;
 import sailedeer.scorecard.data.Game;
 import sailedeer.scorecard.activities.fragments.handling.GameFragmentListAdapter;
 import sailedeer.scorecard.data.sql.DatabaseHelper;
+import sailedeer.scorecard.util.Constants;
 
 /**
  * Created by Eli on 3/7/2017.
@@ -29,6 +33,7 @@ import sailedeer.scorecard.data.sql.DatabaseHelper;
 public class GameTabFragment extends ListFragment {
 
     Game toEdit;
+    ListView lv;
     DatabaseHelper mDbHelper;
     GameFragmentListAdapter adapter;
     public GameTabFragment customListView = null;
@@ -43,9 +48,9 @@ public class GameTabFragment extends ListFragment {
 
         Resources res = getResources();
 
-        adapter = new GameFragmentListAdapter(customListView, customListViewArr, res);
-
         setListData();
+
+        adapter = new GameFragmentListAdapter(customListView, customListViewArr, res);
 
         setListAdapter(adapter);
         setRetainInstance(true);
@@ -53,9 +58,20 @@ public class GameTabFragment extends ListFragment {
     }
 
     @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+        super.onListItemClick(l, v, position, id);
+        Game temp = (Game) lv.getAdapter().getItem(position);
+        Intent startGame = new Intent(getContext(), GameActivity.class);
+        startGame.putExtra(Constants.K_GAME, temp);
+        startActivity(startGame);
+    }
+
+    @Override
     public void onViewCreated(View v, Bundle savedInstanceState)
     {
-        registerForContextMenu(getListView());
+        lv = getListView();
+        registerForContextMenu(lv);
     }
 
     @Override
@@ -101,6 +117,13 @@ public class GameTabFragment extends ListFragment {
 
     public void setListData()
     {
-        //customListViewArr = databaseHelper.getAllGames();
+        customListViewArr = mDbHelper.getAllGames();
+    }
+
+    public void onClick(int position)
+    {
+        Intent intent = new Intent(getContext(), GameActivity.class);
+        intent.putExtra(Constants.K_GAME, (Game) lv.getAdapter().getItem(position));
+        startActivity(intent);
     }
 }

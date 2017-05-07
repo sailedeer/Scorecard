@@ -70,4 +70,5 @@ public class GameEditViewAdapter extends BaseAdapter {
         edit.setText(text);
         textFields.set(position, edit);
     }
+    public ArrayList<EditText> getTextFields() { return textFields; }
 }

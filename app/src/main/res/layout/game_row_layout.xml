@@ -2,31 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/default_gap"
     android:longClickable="true">
 
     <TextView
-        android:id="@+id/player_name"
+        android:id="@+id/game_tab_players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:text="game_ph" />
+        android:text="AB, DC, FR, HG"
+        android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/handicap"
-        android:layout_width="match_parent"
+        android:id="@+id/game_tab_course"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Course:"
-        android:layout_below="@+id/player_name"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/game_tab_players"
+        android:layout_marginStart="34dp"
+        android:layout_toEndOf="@+id/game_tab_hole"
+        android:text="Course: Some Course" />
 
     <TextView
-        android:id="@+id/hole"
-        android:layout_width="match_parent"
+        android:id="@+id/game_tab_hole"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Hole:"
-        android:layout_alignBaseline="@+id/handicap"
-        android:layout_alignBottom="@+id/handicap"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="206dp" />
+        android:layout_below="@+id/game_tab_players"
+        android:text="Current Hole: 0" />
 
 </RelativeLayout>

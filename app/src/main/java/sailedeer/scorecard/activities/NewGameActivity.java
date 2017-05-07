@@ -218,6 +218,7 @@ public class NewGameActivity extends AppCompatActivity {
                         temp[i] = selectedPlayers.get(i);
                     }
                     Game game = new Game(selectedCourse, temp);
+                    mDbHelper.addGame(game);
                     newGameIntent.setAction(Constants.START_GAME);
                     newGameIntent.putExtra(Constants.K_GAME, game);
                     startActivity(newGameIntent);

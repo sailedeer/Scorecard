@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class Player implements /*Parcelable, */Serializable  {
     private int mId;
     private String mName;
+    private String mInitials;
     private int mHandicap;
 
     public Player() {}
@@ -43,5 +44,21 @@ public class Player implements /*Parcelable, */Serializable  {
 
     public void setHandicap(int mHandicap) {
         this.mHandicap = mHandicap;
+    }
+
+    public String getInitials() { return generateInitials(); }
+
+    private String generateInitials()
+    {
+        String initials = "";
+        String first;
+        String last;
+        mName.trim();
+
+        first = mName.substring(0, mName.indexOf(' ')).substring(0, 1);
+        last = mName.substring(mName.indexOf(' ') + 1).substring(0, 1);
+        initials += first + last;
+
+        return initials;
     }
 }
