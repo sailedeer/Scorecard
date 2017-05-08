@@ -15,6 +15,7 @@ public class Game implements Serializable {
     Press mBackPress;
     private Player[] mPlayers;
     private Course mCourse;
+    private int[][] mPersonalScores;
     private int[] mRoundScore;
     private int mCurrentHole;
     private int mId;
@@ -24,8 +25,9 @@ public class Game implements Serializable {
     public Game(Course course, Player[] players) {
         mCourse = course;
         mPlayers = players;
-        mCurrentHole = 0;
+        mCurrentHole = 1;
         mRoundScore = new int[18];
+        mPersonalScores = new int[4][18];
     }
 
     public void setPlayers(Player[] mPlayers) {
@@ -64,6 +66,10 @@ public class Game implements Serializable {
         return mRoundScore;
     }
 
+    public int[][] getPersonalScores() { return mPersonalScores; }
+
+    public void setPersonalScores(int[][] scores) { mPersonalScores = scores; }
+
     public int getCurrentHole() {
         return mCurrentHole;
     }
@@ -81,4 +87,8 @@ public class Game implements Serializable {
         return mBackPress;
     }
 
+    public void calculateHoleScore()
+    {
+
+    }
 }

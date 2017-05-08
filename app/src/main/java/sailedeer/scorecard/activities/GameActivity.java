@@ -51,6 +51,25 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+
+        for (int i = 0; i < game.getPersonalScores().length; i++) {
+            for (int j = 0; j < game.getPersonalScores()[i].length; j++)
+            {
+                adapter.getTextFields().get(i * j).
+                        setText(Integer.toString(game.getPersonalScores()[i][j]));
+            }
+        }
+
+        for (int k = 4; k < adapter.getTextFields().size(); k *= 5)
+        {
+            adapter.getTextFields().get(k).setText(Integer.toString(game.getRoundScore()[k]));
+        }
+    }
+
+    @Override
     public void onBackPressed()
     {
         Intent mainStart = new Intent();
